@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Emergency SOS</title>
+  <style>
+    body {
+      background-color: #f5f5f5;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+    }
+
+    .sos-btn {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 20px 40px;
+      font-size: 24px;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .sos-btn:hover {
+      background-color: #cc0000;
+    }
+
+    #status {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1 style="color: red;">Emergency SOS</h1>
+  <button class="sos-btn" onclick="sendSOS()">SOS</button>
+  <p id="status"> </p>
+
+  <script>
+    async function sendSOS() {
+      const status = document.getElementById("status");
+      status.textContent = "Sending SOS...";
+
+      if (!navigator.geolocation) {
+        status.textContent = "Geolocation is not supported by your browser.";
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+
+          try {
+            const response = await fetch("/sos-alert", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                latitude: latitude,
+                longitude: longitude,
+              }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              status.textContent = "🚨 SOS sent successfully!";
+            } else {
+              status.textContent = "Failed to send SOS: " + (result.message || "Unknown error");
+            }
+          } catch (error) {
+            console.error("Fetch error:", error);
+            status.textContent = "Failed to send SOS due to network error.";
+          }
+        },
+        (error) => {
+          console.error("Geolocation error:", error);
+          status.textContent = "Unable to get your location. Please enable location services.";
+        }
+      );
+    }
+  </script>
+</body>
+</html>
+flask run --host=0.0.0.0

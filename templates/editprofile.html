@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Your Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.7/tailwind.min.css">
+</head>
+<body>
+    <div class="flex justify-center items-center h-screen flex-col overflow-auto">
+        <form class="md:w-1/2 sm:w-5/6 p-6 rounded-lg shadow-md" method="post" action="/edit-profile">
+            <div class="border-b border-gray-900/10 pb-4">
+                <h3 class="font-bold leading-7 text-gray-900">Edit Profile</h3>
+            </div>
+
+            <!-- Name and Age -->
+            <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-900">Name</label>
+                    <input type="text" name="name" id="name" value="{{ user.name }}" required class="p-3 w-full rounded-md shadow ring-1 ring-gray-300 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label for="age" class="block text-sm font-medium text-gray-900">Age</label>
+                    <input type="number" name="age" id="age" value="{{ user.age }}" required class="p-3 w-full rounded-md shadow ring-1 ring-gray-300 focus:ring-indigo-500">
+                </div>
+            </div>
+
+            <!-- Phone and Blood Group -->
+            <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
+                <div>
+                    <label for="phone" class="block text-sm font-medium text-gray-900">Phone Number</label>
+                    <input type="text" name="phone" id="phone" value="{{ user.phone }}" required class="p-3 w-full rounded-md shadow ring-1 ring-gray-300 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label for="blood" class="block text-sm font-medium text-gray-900">Blood Group</label>
+                    <select id="blood" name="blood" class="p-3 w-full rounded-md shadow ring-1 ring-gray-300 focus:ring-indigo-500">
+                        {% for group in ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] %}
+                            <option {% if user.blood_group == group %}selected{% endif %}>{{ group }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Email and Emergency Contact -->
+            <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-900">Email ID</label>
+                    <input type="email" name="email" id="email" value="{{ user.email }}" required class="p-3 w-full rounded-md shadow ring-1 ring-gray-300 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label for="emergency_con" class="block text-sm font-medium text-gray-900">Emergency Contact</label>
+                    <input type="text" name="emergency_con" id="emergency_con" value="{{ user.emergency_con }}" class="p-3 w-full rounded-md shadow ring-1 ring-gray-300 focus:ring-indigo-500">
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-900">Password</label>
+                    <input type="password" name="password" id="password" required class="p-3 w-full rounded-md shadow ring-1 ring-gray-300 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label for="cpassword" class="block text-sm font-medium text-gray-900">Confirm Password</label>
+                    <input type="password" name="cpassword" id="cpassword" required onkeyup="checkpass(this)" class="p-3 w-full rounded-md shadow ring-1 ring-gray-300 focus:ring-indigo-500">
+                </div>
+            </div>
+            <p id="check_pass" class="text-sm mt-2 ml-1"></p>
+
+            <!-- Update Button -->
+            <div class="mt-6">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 w-full rounded-full">Update Profile</button>
+            </div>
+        </form>
+
+        <!-- Delete Profile -->
+        <form class="md:w-1/2 sm:w-5/6 p-6 rounded-lg shadow-md mt-4" action="/delete-profile" method="post">
+            <button type="submit" class="bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 w-full rounded-full">Delete Profile</button>
+        </form>
+    </div>
+
+    <script>
+        const password = document.getElementById('password');
+        function checkpass(elem) {
+            const message = document.getElementById('check_pass');
+            if (elem.value.length > 0) {
+                if (elem.value !== password.value) {
+                    message.innerText = "Password doesn't match!";
+                    message.style.color = "red";
+                } else {
+                    message.innerText = "Password Matched!";
+                    message.style.color = "green";
+                }
+            } else {
+                message.innerText = "";
+            }
+        }
+    </script>
+</body>
+</html>
