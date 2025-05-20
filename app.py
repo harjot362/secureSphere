@@ -8,39 +8,35 @@ import cv2
 import numpy as np
 import pygame
 import bcrypt
+import face_recognition
 
 # Load environment variables from .env file
 load_dotenv()
 
-# ============ Setup Logging ============
+# ============ Logging ============
 logging.basicConfig(level=logging.DEBUG)
 
-# ============ Flask App Setup ============
+# ============ Flask Setup ============
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 
-# Initialize pygame mixer for alarm sound
 pygame.mixer.init()
 
-# ============ Load Environment Variables ============
+# ============ Supabase ============
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-
-# ============ Supabase Client ============
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# ============ Helper Functions ============
+# ============ Helpers ============
 def gen_string(length):
     characters = string.ascii_letters + string.digits 
     return ''.join(random.choice(characters) for _ in range(length))
 
-# ============ Forum Data ============
 forum_posts = []
 
-# ============ EditProfile ===========
-
+# ============ Edit Profile ============
 @app.route("/editprofile", methods=["GET", "POST"])
 def edit_profile():
     if "user" not in session:
@@ -71,7 +67,6 @@ def edit_profile():
             "password": password
         }).eq("email", user_email).execute()
 
-        # update session user data if needed
         session["user"].update({
             "name": name,
             "age": age,
@@ -82,23 +77,20 @@ def edit_profile():
             "password": password
         })
 
-        return redirect(url_for("editprofile"))
+        return redirect(url_for("edit_profile"))
 
-    # GET method - prefill the form
     response = supabase.table("users").select("*").eq("email", user_email).single().execute()
     user = response.data
 
     return render_template("editprofile.html", user=user)
 
-# ============ Login Route ============
-
+# ============ Login ============
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]
 
-        # Authentication logic here (using Supabase or any other system)
         response = supabase.table("users").select("*").eq("email", email).single().execute()
 
         if response.data:
@@ -111,17 +103,15 @@ def login():
 
     return render_template("login.html")
 
-# ============ Static Paths ============
+# ============ Paths ============
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 CASCADE_PATH = os.path.join(BASE_DIR, 'static', 'shieldcam', 'haarcascade_frontalface_default.xml')
 ALARM_PATH = os.path.join(BASE_DIR, 'static', 'shieldcam', 'alarm.mp3')
 
-# ============ Haar Cascade ============
 if not os.path.exists(CASCADE_PATH):
     raise FileNotFoundError(f"Haarcascade not found at {CASCADE_PATH}")
 face_cascade = cv2.CascadeClassifier(CASCADE_PATH)
 
-# ============ Alarm Trigger ============
 alarm_triggered = False
 
 def play_alarm():
@@ -135,7 +125,7 @@ def play_alarm():
             pygame.mixer.music.load(ALARM_PATH)
             pygame.mixer.music.play()
             while pygame.mixer.music.get_busy():
-                pygame.time.Clock().tick(10)  # wait for sound to finish
+                pygame.time.Clock().tick(10)
         except Exception as e:
             app.logger.error(f"Error playing alarm: {e}")
         finally:
@@ -144,7 +134,24 @@ def play_alarm():
 
     threading.Thread(target=_play, daemon=True).start()
 
-# ============ Video Feed Generator ============
+# ============ Load Known Faces ============
+known_face_encodings = []
+known_face_names = []
+
+KNOWN_FACES_DIR = os.path.join(BASE_DIR, "flask_session", "known_faces")
+if not os.path.exists(KNOWN_FACES_DIR):
+    os.makedirs(KNOWN_FACES_DIR)
+
+for filename in os.listdir(KNOWN_FACES_DIR):
+    if filename.lower().endswith((".jpg", ".png")):
+        path = os.path.join(KNOWN_FACES_DIR, filename)
+        image = face_recognition.load_image_file(path)
+        encodings = face_recognition.face_encodings(image)
+        if encodings:
+            known_face_encodings.append(encodings[0])
+            known_face_names.append(os.path.splitext(filename)[0])
+
+# ============ ShieldCam ============
 def gen_frames():
     camera = cv2.VideoCapture(0)
     if not camera.isOpened():
@@ -157,17 +164,34 @@ def gen_frames():
             app.logger.error("Failed to read frame")
             break
 
-        # Face detection
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5)
+        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        face_locations = face_recognition.face_locations(rgb_frame)
+        face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
 
-        for (x, y, w, h) in faces:
-            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
-            play_alarm()
+        for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):
+            matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
+            name = "Unknown"
+
+            if True in matches:
+                first_match_index = matches.index(True)
+                name = known_face_names[first_match_index]
+
+            color = (0, 255, 0) if name != "Unknown" else (0, 0, 255)
+            cv2.rectangle(frame, (left, top), (right, bottom), color, 2)
+            cv2.putText(frame, name, (left, top - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 2)
+
+            if name == "Unknown":
+                play_alarm()
+
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                face_image = frame[top:bottom, left:right]
+                unknown_dir = os.path.join(BASE_DIR, 'flask_session', 'ShieldCam', 'detected_faces')
+                os.makedirs(unknown_dir, exist_ok=True)
+                save_path = os.path.join(unknown_dir, f"unknown_{timestamp}.jpg")
+                cv2.imwrite(save_path, face_image)
 
         ret, buffer = cv2.imencode('.jpg', frame)
         if not ret:
-            app.logger.error("Frame encoding failed")
             break
 
         yield (b'--frame\r\n'
@@ -176,7 +200,6 @@ def gen_frames():
     camera.release()
 
 # ============ Routes ============
-
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -196,8 +219,6 @@ def sos_page():
 @app.route("/sos-alert", methods=["POST"])
 def sos_alert():
     data = request.get_json()
-    app.logger.debug(f"Received SOS data: {data}")
-
     if not data:
         return jsonify({"error": "No data provided"}), 400
 
@@ -217,13 +238,11 @@ def sos_alert():
         }).execute()
 
         if response.error:
-            app.logger.error(f"Supabase insert error: {response.error}")
             return jsonify({"error": "Database error", "details": str(response.error)}), 500
 
         return jsonify({"message": "SOS sent successfully"}), 200
 
     except Exception as e:
-        app.logger.error(traceback.format_exc())
         return jsonify({"error": f"Exception: {str(e)}"}), 500
 
 @app.route('/guide_cards')
