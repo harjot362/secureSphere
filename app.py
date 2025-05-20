@@ -240,7 +240,7 @@ def forum():
         return redirect('/forum')
     return render_template('forum.html', posts=forum_posts)
 
-@app.route('/shieldcam')
+@app.route('/shieldCam')
 def shieldcam():
     return render_template('shieldCam.html')
 
