@@ -1,8 +1,12 @@
-flask
+Flask
 flask_cors
+flask_session
+gunicorn
 bcrypt
 supabase
-gunicorn
-flask_session
 requests
 python-dotenv
+numpy==1.15.4
+opencv-python==3.4.3.18
+face_recognition
+playsound

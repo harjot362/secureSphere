@@ -6,9 +6,42 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
        body {
-            background: linear-gradient(75deg, #ae1281, #576ae7);
-            background-attachment: fixed;
-        }
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  position: relative;
+  font-family: sans-serif;
+  overflow-x: hidden;
+}
+
+/* Blurred Background Layer */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://sph.emory.edu/news/_includes/images/sections/news-releases/2021/features/2022-Womens-Empowerment-Leader.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(2px);
+  z-index: -1;
+}
+
+/* Optional: Add a subtle dark overlay to boost content contrast */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3); /* adjust opacity as needed */
+  z-index: -1;
+}
+
     input {
       width: 100%;
       padding: 10px;
@@ -34,7 +67,7 @@
   </style>
 </head>
 <body>
-  <h1 class="flex items-center justify-center text-white text-3xl m-5">Doctor Finder</h1>
+  <h1 class="flex items-center justify-center text-white text-3xl m-5" style="font-size: xx-large;">Doctor Finder</h1>
 
   <div class="flex">
     <input type="text" id="location" placeholder="Enter Location" class="rounded border p-4 border-gray-400 h-10 m-10 mr-5">

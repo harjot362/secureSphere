@@ -8,12 +8,45 @@
     />
     <style>
       body {
-        background: linear-gradient(75deg, #ae1281, #576ae7);
-        background-attachment: fixed;
-      }
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  position: relative;
+  font-family: sans-serif;
+  overflow-x: hidden;
+}
+
+/* Blurred Background Layer */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://img.freepik.com/premium-photo/unity-strength-women-silhouettes-purplepink-wash_818261-31532.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(5px);
+  z-index: -1;
+}
+
+/* Optional: Add a subtle dark overlay to boost content contrast */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3); /* adjust opacity as needed */
+  z-index: -1;
+}
+
 
       .card {
-        background: rgba(255, 255, 255, 0.9);
+        background: transparent;
         width: 100%;
         max-width: 400px;
         margin: 0 auto;
@@ -112,7 +145,7 @@
           <div class="card-item">
             <div class="card rounded-lg">
               <a
-                href="/market"
+                href="/shieldCam"
                 class="block rounded-lg bg-white shadow-md p-4 hover:shadow-lg transition duration-300"
               >
                 <img
@@ -148,7 +181,7 @@
           <div class="card-item">
             <div class="card rounded-lg">
               <a
-                href="/guides"
+                href="/guide_cards"
                 class="block rounded-lg bg-white shadow-md p-4 hover:shadow-lg transition duration-300"
               >
                 <img
@@ -202,7 +235,7 @@
         </div>
 
         <footer class="bg-gray-800 w-full text-gray-300 py-4">
-          <div class="text-center">&copy; 2023 SecureSphere. All rights reserved.</div>
+          <div class="text-center">&copy; 2025 SecureSphere. All rights reserved.</div>
         </footer>
       </div>
     </div>
