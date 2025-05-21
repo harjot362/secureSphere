@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Emergency SOS</title>
   <style>
     body {
@@ -11,7 +11,6 @@
       text-align: center;
       margin-top: 100px;
     }
-
     .sos-btn {
       background-color: red;
       color: white;
@@ -21,69 +20,100 @@
       border-radius: 30px;
       cursor: pointer;
       box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease;
     }
-
     .sos-btn:hover {
       background-color: #cc0000;
     }
-
     #status {
       margin-top: 20px;
       font-size: 18px;
       color: #333;
+      min-height: 24px;
+      white-space: pre-wrap;
     }
   </style>
 </head>
 <body>
   <h1 style="color: red;">Emergency SOS</h1>
   <button class="sos-btn" onclick="sendSOS()">SOS</button>
-  <p id="status"> </p>
+  <p id="status"></p>
 
   <script>
     async function sendSOS() {
       const status = document.getElementById("status");
       status.textContent = "Sending SOS...";
 
+      const defaultLocation = {
+        latitude: 28.6139,
+        longitude: 77.2090
+      };
+
+      async function postSOS(lat, long) {
+        try {
+          // Send SOS location data
+          let response = await fetch("/sos-alert", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ latitude: lat, longitude: long }),
+          });
+
+          if (!response.ok) {
+            let result = await response.json();
+            status.textContent = "Failed to send SOS: " + (result.message || "Unknown error");
+            return false;
+          }
+
+          // Send SOS email
+          response = await fetch("/send-sos-email", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              latitude: lat,
+              longitude: long,
+              message: `🚨 SOS Alert!\nLocation: https://www.google.com/maps?q=${lat},${long}`
+            }),
+          });
+
+          if (!response.ok) {
+            let result = await response.json();
+            status.textContent = "SOS sent, but failed to send email: " + (result.message || "Unknown error");
+            return false;
+          }
+
+          status.textContent = "🚨 SOS sent successfully! Email sent.";
+          return true;
+
+        } catch (error) {
+          console.error("Fetch error:", error);
+          status.textContent = "Failed to send SOS due to network error: " + error.message;
+          return false;
+        }
+      }
+
       if (!navigator.geolocation) {
-        status.textContent = "Geolocation is not supported by your browser.";
+        status.textContent = "Geolocation not supported. Using default location.";
+        await postSOS(defaultLocation.latitude, defaultLocation.longitude);
         return;
       }
 
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
-
-          try {
-            const response = await fetch("/sos-alert", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                latitude: latitude,
-                longitude: longitude,
-              }),
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-              status.textContent = "🚨 SOS sent successfully!";
-            } else {
-              status.textContent = "Failed to send SOS: " + (result.message || "Unknown error");
-            }
-          } catch (error) {
-            console.error("Fetch error:", error);
-            status.textContent = "Failed to send SOS due to network error.";
-          }
+          await postSOS(latitude, longitude);
         },
-        (error) => {
-          console.error("Geolocation error:", error);
-          status.textContent = "Unable to get your location. Please enable location services.";
+        async (error) => {
+          console.warn("Geolocation error:", error.message);
+          status.textContent = "Using default location due to error: " + error.message;
+          await postSOS(defaultLocation.latitude, defaultLocation.longitude);
+        },
+        {
+          timeout: 10000,
+          maximumAge: 0,
+          enableHighAccuracy: true,
         }
       );
     }
   </script>
 </body>
 </html>
-flask run --host=0.0.0.0

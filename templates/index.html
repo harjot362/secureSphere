@@ -1,49 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Tool Hub</title>
+    <meta charset="UTF-8" />
+    <title>Tool Hub - SecureSphere</title>
     <link
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css"
       rel="stylesheet"
     />
     <style>
       body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  position: relative;
-  font-family: sans-serif;
-  overflow-x: hidden;
-}
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        position: relative;
+        font-family: sans-serif;
+        overflow-x: hidden;
+      }
 
-/* Blurred Background Layer */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url("https://img.freepik.com/premium-photo/unity-strength-women-silhouettes-purplepink-wash_818261-31532.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  filter: blur(5px);
-  z-index: -1;
-}
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("https://img.freepik.com/premium-photo/unity-strength-women-silhouettes-purplepink-wash_818261-31532.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        filter: blur(5px);
+        z-index: -1;
+      }
 
-/* Optional: Add a subtle dark overlay to boost content contrast */
-body::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.3); /* adjust opacity as needed */
-  z-index: -1;
-}
-
+      body::after {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        z-index: -1;
+      }
 
       .card {
         background: transparent;
@@ -72,185 +70,143 @@ body::after {
     </style>
   </head>
 
-  <body
-    class="font-sans text-center bg-opacity-80 flex items-center justify-center h-screen"
-  >
-    <div class="text-white w-full h-full">
-      <h1 class="text-5xl font-semibold mt-6">Welcome to SecureSphere</h1>
-      <p class="text-s pb-4">Empowering Women, Ensuring Safety</p>
+  <body class="font-sans text-center bg-opacity-80 pt-20 flex items-center justify-center min-h-screen">
+    
+    <!-- Navbar -->
+<!-- Navbar -->
+<nav class="bg-gray-900 shadow-md fixed top-0 left-0 w-full z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-24"> <!-- Increased height -->
+      <!-- Left: Logo -->
+      <div class="flex items-center space-x-3">
+        <img src="../static/images/logo.png" alt="SecureSphere Logo" class="h-20 w-auto" />
+      </div>
+
+      <!-- Right: Title + Tagline -->
+      <div class="text-right text-white">
+        <div class="text-2xl font-bold">SecureSphere</div>
+        <div class="text-sm font-light">Empowering Women, Ensuring Safety</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
 
       <div class="flex flex-col items-center justify-center">
         <div class="card-group mt-10">
-          <!-- Card 1: Safe Route Finder -->
+          <!-- Card 1 -->
           <div class="card-item">
             <div class="card rounded-lg">
-              <a
-                href="/saferoute"
-                class="block rounded-lg bg-white shadow-md p-4 hover:shadow-lg transition duration-300"
-              >
-                <img
-                  src="../static/images/route.png"
-                  alt="Safe Route Finder Icon"
-                  class="mx-auto w-16 h-16 m-4"
-                />
+              <a href="/saferoute" class="block rounded-lg bg-white shadow-md p-4 hover:shadow-lg transition duration-300">
+                <img src="../static/images/route.png" alt="Safe Route Finder Icon" class="mx-auto w-16 h-16 m-4" />
                 <h2 class="text-xl font-semibold text-purple-800">Safe Route Finder</h2>
-                <p class="text-gray-600">
-                  Find the safest routes for your journeys.
-                </p>
+                <p class="text-gray-600">Find the safest routes for your journeys.</p>
               </a>
             </div>
           </div>
 
-          <!-- Card 2: Gynecologist Finder -->
+          <!-- Card 2 -->
           <div class="card-item">
             <div class="card rounded-lg">
-              <a
-                href="/gynacfinder"
-                class="block rounded-lg bg-white shadow-md p-4 hover:shadow-lg transition duration-300"
-              >
-                <img
-                  src="../static/images/search.png"
-                  alt="Gynecologist Finder Icon"
-                  class="mx-auto w-16 h-16 m-4"
-                />
+              <a href="/gynacfinder" class="block rounded-lg bg-white shadow-md p-4 hover:shadow-lg transition duration-300">
+                <img src="../static/images/search.png" alt="Gynecologist Finder Icon" class="mx-auto w-16 h-16 m-4" />
                 <h2 class="text-xl font-semibold text-purple-800">Clinic Finder</h2>
-                <p class="text-gray-600">
-                  Locate Your nearby Clinic details
-                </p>
+                <p class="text-gray-600">Locate Your nearby Clinic details</p>
               </a>
             </div>
           </div>
 
-          <!-- Card 3: Period Tracker -->
+          <!-- Card 3 -->
           <div class="card-item">
             <div class="card rounded-lg">
-              <a
-                href="/sos"
-                class="block rounded-lg bg-white shadow-md p-4 hover:shadow-lg transition duration-300"
-              >
-                <img
-                  src="../static/images/tracker.png"
-                  alt="Period Tracker Icon"
-                  class="mx-auto w-16 h-16 m-4"
-                />
+              <a href="/sos" class="block rounded-lg bg-white shadow-md p-4 hover:shadow-lg transition duration-300">
+                <img src="../static/images/tracker.png" alt="Period Tracker Icon" class="mx-auto w-16 h-16 m-4" />
                 <h2 class="text-xl font-semibold text-purple-800">SOS</h2>
-                <p class="text-gray-600">
-                  Call For Help
-                </p>
+                <p class="text-gray-600">Call For Help</p>
               </a>
             </div>
           </div>
 
-          <!-- Card 4: Marketplace -->
+          <!-- Card 4 -->
           <div class="card-item">
             <div class="card rounded-lg">
-              <a
-                href="/shieldCam"
-                class="block rounded-lg bg-white shadow-md p-4 hover:shadow-lg transition duration-300"
-              >
-                <img
-                  src="../static/images/retailer.png"
-                  alt="Marketplace Icon"
-                  class="mx-auto w-16 h-16 m-4"
-                />
+              <a href="/shieldCam" class="block rounded-lg bg-white shadow-md p-4 hover:shadow-lg transition duration-300">
+                <img src="../static/images/retailer.png" alt="Marketplace Icon" class="mx-auto w-16 h-16 m-4" />
                 <h2 class="text-xl font-semibold text-purple-800">ShieldCam</h2>
                 <p class="text-gray-600">Your Shield of Security</p>
               </a>
             </div>
           </div>
 
-          <!-- Card 5: Forum -->
+          <!-- Card 5 -->
           <div class="card-item">
             <div class="card rounded-lg">
-              <a
-                href="/forum"
-                class="block rounded-lg bg-white shadow-md p-4 hover:shadow-lg transition duration-300"
-              >
-                <img
-                  src="../static/images/discussion.png"
-                  alt="Forum Icon"
-                  class="mx-auto w-16 h-16 m-4"
-                />
+              <a href="/forum" class="block rounded-lg bg-white shadow-md p-4 hover:shadow-lg transition duration-300">
+                <img src="../static/images/discussion.png" alt="Forum Icon" class="mx-auto w-16 h-16 m-4" />
                 <h2 class="text-xl font-semibold text-purple-800">Forum</h2>
                 <p class="text-gray-600">Join discussions and share knowledge.</p>
               </a>
             </div>
           </div>
 
-          <!-- Card 6: Guides -->
+          <!-- Card 6 -->
           <div class="card-item">
             <div class="card rounded-lg">
-              <a
-                href="/guide_cards"
-                class="block rounded-lg bg-white shadow-md p-4 hover:shadow-lg transition duration-300"
-              >
-                <img
-                  src="../static/images/guide-book.png"
-                  alt="Guides Icon"
-                  class="mx-auto w-16 h-16 m-4"
-                />
+              <a href="/guide_cards" class="block rounded-lg bg-white shadow-md p-4 hover:shadow-lg transition duration-300">
+                <img src="../static/images/guide-book.png" alt="Guides Icon" class="mx-auto w-16 h-16 m-4" />
                 <h2 class="text-xl font-semibold text-purple-800">Guides</h2>
-                <p class="text-gray-600">
-                  Access informative guides and tutorials.
-                </p>
+                <p class="text-gray-600">Access informative guides and tutorials.</p>
               </a>
             </div>
           </div>
-
         </div>
 
-      <footer class="bg-gray-900 text-white px-6 py-10">
-  <div class="max-w-7.5xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-    <!-- About Section -->
-    <div>
-      <h2 class="text-xl font-bold mb-4">Secure Sphere</h2>
-      <p class="text-sm text-gray-300">
-        Empowering women with safety, awareness, and resources. Your digital companion for secure journeys.
-      </p>
-    </div>
+        <!-- Footer -->
+        <footer class="bg-gray-900 text-white px-6 py-10 mt-16">
+          <div class="max-w-7.5xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+            <div>
+              <h2 class="text-xl font-bold mb-4">Secure Sphere</h2>
+              <p class="text-sm text-gray-300">
+                Empowering women with safety, awareness, and resources. Your digital companion for secure journeys.
+              </p>
+            </div>
 
-    <!-- Important Numbers -->
-    <div>
-      <h2 class="text-lg font-semibold mb-4">Important Numbers</h2>
-      <ul class="space-y-2 text-sm text-gray-300">
-        <li>📞 <a href="tel:1091" class="hover:underline">Women Helpline (All India): <strong>1091</strong></a></li>
-        <li>📞 <a href="tel:112" class="hover:underline">National Emergency: <strong>112</strong></a></li>
-        <li>📞 <a href="tel:155260" class="hover:underline">Cyber Crime Helpline: <strong>155260</strong></a></li>
-        <li>📞 <a href="tel:1098" class="hover:underline">Child Helpline: <strong>1098</strong></a></li>
-      </ul>
-    </div>
+            <div>
+              <h2 class="text-lg font-semibold mb-4">Important Numbers</h2>
+              <ul class="space-y-2 text-sm text-gray-300">
+                <li>📞 <a href="tel:1091" class="hover:underline">Women Helpline (All India): <strong>1091</strong></a></li>
+                <li>📞 <a href="tel:112" class="hover:underline">National Emergency: <strong>112</strong></a></li>
+                <li>📞 <a href="tel:155260" class="hover:underline">Cyber Crime Helpline: <strong>155260</strong></a></li>
+                <li>📞 <a href="tel:1098" class="hover:underline">Child Helpline: <strong>1098</strong></a></li>
+              </ul>
+            </div>
 
-    <!-- Useful Links -->
-    <div>
-      <h2 class="text-lg font-semibold mb-4">Useful Links</h2>
-      <ul class="space-y-2 text-sm text-gray-300">
-        <li><a href="https://www.ncw.gov.in/" target="_blank" class="hover:underline">National Commission for Women</a></li>
-        <li><a href="https://mha.gov.in" target="_blank" class="hover:underline">Ministry of Home Affairs</a></li>
-        <li><a href="https://cybercrime.gov.in" target="_blank" class="hover:underline">Cyber Crime Portal</a></li>
-        <li><a href="https://wcd.gov.in/" target="_blank" class="hover:underline">Women & Child Development</a></li>
-      </ul>
-    </div>
+            <div>
+              <h2 class="text-lg font-semibold mb-4">Useful Links</h2>
+              <ul class="space-y-2 text-sm text-gray-300">
+                <li><a href="https://www.ncw.gov.in/" target="_blank" class="hover:underline">National Commission for Women</a></li>
+                <li><a href="https://mha.gov.in" target="_blank" class="hover:underline">Ministry of Home Affairs</a></li>
+                <li><a href="https://cybercrime.gov.in" target="_blank" class="hover:underline">Cyber Crime Portal</a></li>
+                <li><a href="https://wcd.gov.in/" target="_blank" class="hover:underline">Women & Child Development</a></li>
+              </ul>
+            </div>
 
-    <!-- Quick Links or Social -->
-    <div>
-      <h2 class="text-lg font-semibold mb-4">Explore</h2>
-      <ul class="space-y-2 text-sm text-gray-300">
-        <li><a href="/sos" class="hover:underline">SOS Alert</a></li>
-        <li><a href="/saferoute" class="hover:underline">Safe Route Finder</a></li>
-        <li><a href="/forum" class="hover:underline">Community Forum</a></li>
-        <li><a href="/guide_cards" class="hover:underline">Guides & Tutorials</a></li>
-      </ul>
-    </div>
-  </div>
+            <div>
+              <h2 class="text-lg font-semibold mb-4">Explore</h2>
+              <ul class="space-y-2 text-sm text-gray-300">
+                <li><a href="/sos" class="hover:underline">SOS Alert</a></li>
+                <li><a href="/saferoute" class="hover:underline">Safe Route Finder</a></li>
+                <li><a href="/forum" class="hover:underline">Community Forum</a></li>
+                <li><a href="/guide_cards" class="hover:underline">Guides & Tutorials</a></li>
+              </ul>
+            </div>
+          </div>
 
-  <!-- Divider -->
-  <div class="border-t border-gray-700 mt-8 pt-6 text-center">
-    <p class="text-sm text-gray-400">&copy; 2025 Secure Sphere | All Rights Reserved</p>
-    <p class="text-sm text-gray-400">Developed with <span class="text-red-400">❤️</span> by Harjot Kaur, Gurnoor Dhaliwal, Akshit Garg, Gursahaj Singh</p>
-  </div>
-</footer>
-
-
+          <div class="border-t border-gray-700 mt-8 pt-6 text-center">
+            <p class="text-sm text-gray-400">&copy; 2025 Secure Sphere | All Rights Reserved</p>
+            <p class="text-sm text-gray-400">Developed with <span class="text-red-400">❤️</span> by Harjot Kaur, Gurnoor Dhaliwal, Akshit Garg, Gursahaj Singh</p>
+          </div>
+        </footer>
       </div>
     </div>
   </body>
